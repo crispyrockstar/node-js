@@ -4,6 +4,6 @@
     "start": "node app.js"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2"
+    "@types/node": "22.10.2"
   }
 }

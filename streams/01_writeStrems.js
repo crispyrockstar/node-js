@@ -1,4 +1,4 @@
 import fs from "fs";
-const writeStream = await fs.WriteStream("text.txt");
+const writeStream = fs.createWriteStream("file.txt");
 
-writeStream.write("hello");
+writeStream.write("abc");
