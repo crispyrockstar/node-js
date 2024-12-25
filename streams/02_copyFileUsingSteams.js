@@ -1,6 +1,7 @@
 import fs from "fs";
 console.time();
 const readStream = fs.createReadStream("D:\\NodeJS\\source.mkv", {
+  //setting 1 MB as the highWaterMark limit to read the data at once
   highWaterMark: 1 * 1024 * 1024,
 });
 
