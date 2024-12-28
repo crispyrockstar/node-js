@@ -1,0 +1,77 @@
+
+//PIPE
+
+
+/*
+run ubuntu wsl and in Bash terminal
+
+echo "Hi" | node pipeAndRedirection.js
+
+here "Hi" will be part of o/p streams and | => pipe and works as inputs stream for node process
+
+here in the end a new line character gets inserted by the echo to o/p stream
+
+final o/p would be 
+<Hi
+
+>
+
+
+*/
+
+process.stdin.setEncoding("utf-8");
+//alternate of above to use .toString() in chunk printing
+
+process.stdin.on('data', (chunk)=>{
+    console.log("pipeingAndRedirection: ",chunk)
+})
+
+
+//bash 
+// to provide a manual input to node process we are using echo
+
+// echo "Hi " | node pipeingAndRedirection.js
+// this will take the "Hi " as input in node process
+
+
+// to take the input from a node process output
+//there should be a file name script.js to run this
+
+// run in bash(wsl) terminal
+// node script.js | node pipeingAndRedirection.js
+
+
+//REDIRECTION
+
+// run in bash
+// node script.js > output.txt
+
+// here > means to write a content in a file
+//      >> means to append the content to file if exist otherwise create a new one
+//      < means to take a file content as input from a file 
+
+// output stream data gets exported to the output file directly and error part will go to terminal by default
+
+// to send the error  stream data to file 
+
+// node script.js >> output.txt 2>> output.txt
+
+// here 2 dictated that which line neeeds to redirect
+
+//to take input from a content of a existing file
+//- output.txt should be there to run this
+// node pipeingAndRedirection.js < output.txt
+
+// you'll see the content of output.txt would be taken as input stream in node process
+
+-------------------------------------------------------------------------------
+
+script.js
+
+process.stdout.write("Hi from script.js stdout write\n");
+
+process.stderr.write("hi from error write\n")
+
+
+------------------------------------------------------------------------------------
+
