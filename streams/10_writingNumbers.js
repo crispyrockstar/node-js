@@ -22,6 +22,6 @@ writeStreams.end();
 // });
 console.timeEnd();
 // time taken near by 25ms
-//streams are faster than normal file writing
+//streams are 60 to 70 times faster than normal file writing
 
 // why streams are faster than normal file writing
