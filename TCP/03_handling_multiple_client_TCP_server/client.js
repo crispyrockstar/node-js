@@ -1,6 +1,6 @@
 import net from "node:net";
 
-const host = "localhost"; // Server address
+const host = "0.0.0.0"; // Server address
 const port = 4000; // Server port
 
 const socket = net.createConnection({ host, port }, () => {
@@ -14,7 +14,7 @@ const socket = net.createConnection({ host, port }, () => {
 // Handle data received from the server
 socket.on("data", (data) => {
   console.log(`Received from server: ${data.toString()}`);
-  //   socket.end(); // Close the connection after receiving the response
+  // socket.end(); // Close the connection after receiving the response
 });
 
 // Handle socket closure
@@ -27,6 +27,14 @@ socket.on("error", (err) => {
   console.error("Client error:", err);
 });
 
+//to send the message from the client terminal
 process.stdin.on("data", (data) => {
   socket.write(data.toString());
+  console.log(data.toString());
+  if (data.toString().trim().toLocaleLowerCase() === "close") {
+    socket.end(); // Close the connection after receiving the response
+  }
+  if (data.toString().trim().toLocaleLowerCase() === "start") {
+    socket.connect();
+  }
 });

@@ -1,8 +1,9 @@
 import net from "node:net";
 
 let clientArray = [];
+let clientId = 1;
 
-const host = "localhost";
+const host = "0.0.0.0";
 const port = 4000;
 
 /* 
@@ -19,10 +20,14 @@ const server = net.createServer((socket) => {
   console.log("Client connected", client);
 
   //making record for all client connected
-  clientArray.push(socket);
+  // console.log(socket);
+  const currentClientID = clientId++;
+  clientArray.push({ socket, clientId: currentClientID });
 
   // Send a welcome message to the client
-  socket.write("Welcome to the main TCP server!\n");
+  socket.write(
+    `Welcome to the main TCP server!\n your clientId: ${currentClientID}`
+  );
 
   // Listen for data from the client
   socket.on("data", (data) => {
@@ -33,21 +38,17 @@ const server = net.createServer((socket) => {
 
   // Handle client disconnection
   socket.on("end", () => {
-    console.log("Client disconnected: ", client);
+    console.log("Client disconnected: ", client, currentClientID);
     clientArray = clientArray.filter(
-      (client) =>
-        client.remoteAddress === socket.remoteAddress &&
-        client.remotePort === socket.remotePort
+      (client) => client.clientId !== currentClientID
     );
   });
 
   // Handle socket errors
   socket.on("error", (err) => {
-    console.error("Socket error:", err);
+    console.error("Socket error with clientId:", currentClientID, err);
     clientArray = clientArray.filter(
-      (client) =>
-        client.remoteAddress === socket.remoteAddress &&
-        client.remotePort === socket.remotePort
+      (client) => client.clientId !== currentClientID
     );
   });
 });
@@ -55,4 +56,21 @@ const server = net.createServer((socket) => {
 // Start the server
 server.listen(port, host, () => {
   console.log(`TCP server listening on ${host}:${port}`);
+});
+
+//broadcasting a message to connected clients
+process.stdin.on("data", (data) => {
+  const inputString = data.toString();
+  const [clientID] = inputString.split(" ");
+  const isValidClient =
+    parseInt(clientID) !== NaN &&
+    parseInt(clientID) > 0 &&
+    clientArray[parseInt(clientID) - 1];
+  if (isValidClient) {
+    clientArray[parseInt(clientID) - 1].socket.write(inputString.substring(1));
+  } else {
+    clientArray.forEach((client) => {
+      client.socket.write(inputString);
+    });
+  }
 });
