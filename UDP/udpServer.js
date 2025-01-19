@@ -10,26 +10,17 @@ const UDP_IP = "0.0.0.0"; // Localhost
 const UDP_PORT = 4000; // The port number the server will listen on
 
 // Create a UDP socket
-const server = dgram.createSocket("udp4", () => {
-  const address = server.address();
-  console.log(`Server is listening on ${address.address}:${address.port}`);
-});
-
-// Bind the server to the specified IP and port -- written in above callback
-// server.on("listening", () => {
-//   const address = server.address();
-//   console.log(`Server is listening on ${address.address}:${address.port}`);
-// });
+const socket = dgram.createSocket("udp4");
 
 // Handle incoming messages
-server.on("message", (msg, remote) => {
+socket.on("message", (msg, remote) => {
   console.log(
     `Received message: ${msg.toString()} from ${remote.address}:${remote.port}`
   );
 
   // Optionally, send a response back to the client
   const response = Buffer.from(`Message received: ${msg}`);
-  server.send(
+  socket.send(
     response,
     0,
     response.length,
@@ -45,5 +36,9 @@ server.on("message", (msg, remote) => {
   );
 });
 
-// Bind the server to the IP and port
-server.bind(UDP_PORT, UDP_IP);
+// Bind the server socket to the IP and port
+socket.bind({ port: UDP_PORT }, UDP_IP, () => {
+  const address = socket.address();
+  console.dir(address, { depth: null });
+  console.log(`Listening on port ${address.port}`);
+});
